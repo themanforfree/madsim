@@ -118,7 +118,7 @@ impl Inner {
                     advance_slices(&mut bufs, n);
                 }
                 writer.flush().await.unwrap();
-                done.send(()).unwrap();
+                let _ = done.send(());
             }
         });
 
@@ -219,8 +219,8 @@ impl Endpoint {
         // Safety: sender task will refer the data until the `done` await return.
         let bufs = unsafe { std::mem::transmute(bufs) };
         let (done, done_recver) = oneshot::channel();
-        sender.send(SendMsg { tag, bufs, done }).await.ok().unwrap();
-        done_recver.await.unwrap();
+        let _ = sender.send(SendMsg { tag, bufs, done }).await.ok();
+        let _ = done_recver.await;
         Ok(())
     }
 
