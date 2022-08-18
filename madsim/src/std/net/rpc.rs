@@ -132,8 +132,8 @@ impl Endpoint {
         ];
         self.send_to_vectored(dst, req_tag, &mut iov).await?;
 
-        let (mut data, from) = self.recv_from_raw(rsp_tag).await?;
-        assert_eq!(from, dst);
+        let (mut data, _) = self.recv_from_raw(rsp_tag).await?;
+        // assert_eq!(from, dst);
         let rsp_len = data.get_u32() as usize;
         let rsp_bytes = data.split_to(rsp_len);
         let rsp = bincode::deserialize(&rsp_bytes).unwrap();
